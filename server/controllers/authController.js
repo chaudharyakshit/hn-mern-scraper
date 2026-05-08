@@ -10,6 +10,11 @@ const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
+
     const user = await User.create({ username, email, password });
 
     res.status(201).json({
