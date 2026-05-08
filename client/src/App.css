@@ -1,0 +1,296 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f6f6ef;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Navbar */
+.navbar {
+  background: #ff6600;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.nav-user {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Auth Forms */
+.auth-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.auth-container h2 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.auth-container button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 6px;
+}
+
+.error-msg {
+  color: #d32f2f;
+  background: #fdecea;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  font-size: 0.9rem;
+}
+
+/* Home Page */
+.home-page h2 {
+  margin-bottom: 4px;
+}
+
+.home-header {
+  margin-bottom: 20px;
+}
+
+.home-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.last-updated {
+  font-size: 0.85rem;
+  color: #828282;
+}
+
+.btn-refresh {
+  padding: 6px 14px;
+  background: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Story Cards */
+.stories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.story-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.story-points {
+  margin-right: 14px;
+}
+
+.points-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #ff6600;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.story-content {
+  flex: 1;
+}
+
+.story-title {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.story-title:hover {
+  text-decoration: underline;
+}
+
+.story-meta {
+  font-size: 0.8rem;
+  color: #828282;
+  margin-top: 3px;
+}
+
+.btn-bookmark {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #ccc;
+  padding: 4px;
+}
+
+.btn-bookmark.bookmarked {
+  color: #ff6600;
+}
+
+/* Loading Spinner */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #ff6600;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.empty-state h3 {
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.empty-state p {
+  color: #828282;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 10px 0;
+}
+
+.btn-page {
+  padding: 6px 16px;
+  background: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Bookmarks Page */
+.bookmarks-page h2 {
+  margin-bottom: 16px;
+}
