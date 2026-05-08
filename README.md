@@ -1,227 +1,179 @@
-# HN Board
+# HN Board — Hacker News Dashboard
 
-A full-stack **Hacker News Dashboard** built with the MERN stack. Scrapes top stories from Hacker News, provides JWT authentication, and lets users bookmark their favorite stories.
+A full-stack web app that scrapes top stories from Hacker News and presents them in a clean, modern dashboard. Users can sign up, log in, browse stories, and bookmark the ones they want to read later.
 
-## Features
+## Demo Video
 
-- Live scraping of top Hacker News stories (Cheerio)
-- Stories sorted by points with pagination
-- JWT authentication (register / login)
-- Bookmark stories with optimistic UI toggle
-- Manual refresh with 60-second rate limit
-- Premium dark-themed login page with glassmorphism UI
-- Fully responsive design
+**Watch the full walkthrough here:**
+https://www.loom.com/share/6b4945611a584d41b947b9b4811619ae
+
+---
+
+## What I Built
+
+I wanted to build something that actually feels like a real product — not just a basic CRUD app. So I picked Hacker News as the data source because it's familiar, and focused on making the whole experience smooth from login to bookmarking.
+
+Here's what the app does:
+
+- Scrapes the top stories from Hacker News automatically when the server starts
+- Shows them in a paginated feed sorted by points
+- Lets users register and log in (JWT-based auth)
+- Logged-in users can bookmark stories and view them later
+- Has a manual refresh button (rate-limited to prevent abuse)
+- The entire UI is custom-built — dark theme, responsive, works on all devices
+
+---
 
 ## Tech Stack
 
-| Layer     | Tech                          |
-|-----------|-------------------------------|
-| Frontend  | React 19, React Router 7, Axios |
-| Backend   | Express 5, Mongoose 9, JWT   |
-| Scraper   | Axios, Cheerio                |
-| Database  | MongoDB (Atlas or local)      |
-| Styling   | Custom CSS, Inter font        |
+| Layer | What I Used |
+|-------|-------------|
+| Frontend | React, React Router, Axios |
+| Backend | Node.js, Express |
+| Database | MongoDB Atlas (Mongoose) |
+| Auth | JWT + bcrypt for password hashing |
+| Scraper | Axios + Cheerio |
+| Styling | Custom CSS (no UI library) |
+
+I didn't use any component library like Material UI or Bootstrap — all the styles are handwritten to keep things lightweight and give me full control over the design.
 
 ---
 
-## Local Development
+## How to Run Locally
 
-### Prerequisites
+### You'll need:
+- Node.js (v18 or newer)
+- A MongoDB database (Atlas works great, local is fine too)
 
-- Node.js v18+
-- MongoDB (local or Atlas URI)
-
-### 1. Clone
+### Steps:
 
 ```bash
-git clone <your-repo-url>
+# Clone the repo
+git clone <repo-url>
 cd hn-board
+
+# Set up environment variables
+# Create a file: server/.env
 ```
 
-### 2. Environment Variables
-
-Create `.env` in the **project root**:
+Put this in `server/.env`:
 
 ```env
-MONGO_URI=mongodb://localhost:27017/hn-board
-JWT_SECRET=your_jwt_secret_here
 PORT=5000
-CLIENT_URL=http://localhost:3000
+MONGO_URI=your_mongodb_connection_string_here
+JWT_SECRET=any_random_secret_string
+JWT_EXPIRES_IN=7d
+NODE_ENV=development
 ```
 
-### 3. Install & Run
+Then:
 
 ```bash
-# Install server dependencies
+# Install and start the server
 cd server
 npm install
-
-# Install client dependencies
-cd ../client
-npm install
-
-# Start server (from /server)
-cd ../server
 npm run dev
 
-# Start client (from /client — in a separate terminal)
-cd ../client
+# In a new terminal — install and start the client
+cd client
+npm install
 npm start
 ```
 
-- Server: `http://localhost:5000`
-- Client: `http://localhost:3000`
+Open `http://localhost:3000` and you're good to go.
 
 ---
 
-## Production Deployment (IP-based, No Domain)
+## Production Build
 
-Use this when deploying on a VPS/cloud server accessed via IP address (e.g. `http://123.45.67.89`).
-
-### 1. Server Setup
-
-SSH into your server and clone the repo:
+For production, the Express server serves the React build directly — so you only need one process running.
 
 ```bash
-git clone <your-repo-url>
-cd hn-board
-```
-
-### 2. Environment Variables
-
-Create `.env` in the **project root**:
-
-```env
-MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/hn-board
-JWT_SECRET=your_strong_secret_here
-PORT=5000
-CLIENT_URL=http://<YOUR_SERVER_IP>:3000
-```
-
-> Replace `<YOUR_SERVER_IP>` with your actual server IP.
-
-### 3. Build the React Client
-
-```bash
+# Build the React app
 cd client
-npm install
+npm run build
 
-# Set API URL for production build
-# Linux/Mac:
-REACT_APP_API_URL=http://<YOUR_SERVER_IP>:5000/api npm run build
+# Update server/.env
+# Change NODE_ENV=production
 
-# Windows (PowerShell):
-$env:REACT_APP_API_URL="http://<YOUR_SERVER_IP>:5000/api"; npm run build
+# Start the server
+cd ../server
+npm start
 ```
 
-This generates a `client/build/` folder with static files.
-
-### 4. Serve Static Build from Express
-
-Add this to `server/index.js` **before** the 404 handler (already supports it, but if not present):
-
-```js
-// Serve React build in production
-if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
-  app.use(express.static(path.join(__dirname, '../client/build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-  });
-}
-```
-
-### 5. Install Server Deps & Start
-
-```bash
-cd server
-npm install
-
-# Run directly
-NODE_ENV=production node index.js
-
-# Or use PM2 (recommended)
-npm install -g pm2
-NODE_ENV=production pm2 start index.js --name hn-board
-pm2 save
-pm2 startup
-```
-
-### 6. Open Firewall Ports
-
-```bash
-# Allow port 5000 (or whichever PORT you set)
-sudo ufw allow 5000
-```
-
-### 7. Access the App
-
-Open `http://<YOUR_SERVER_IP>:5000` in your browser.
-
----
-
-## Quick Deploy Checklist
-
-| Step | Command / Action |
-|------|-----------------|
-| Clone repo | `git clone <url> && cd hn-board` |
-| Create `.env` | Add MONGO_URI, JWT_SECRET, PORT, CLIENT_URL |
-| Build client | `cd client && REACT_APP_API_URL=http://IP:5000/api npm run build` |
-| Install server | `cd server && npm install` |
-| Start server | `NODE_ENV=production pm2 start index.js --name hn-board` |
-| Open firewall | `sudo ufw allow 5000` |
-| Visit app | `http://YOUR_IP:5000` |
+Now everything runs on `http://localhost:5000` — both the frontend and the API from a single server.
 
 ---
 
 ## API Endpoints
 
-| Method | Endpoint                  | Auth | Description               |
-|--------|---------------------------|------|---------------------------|
-| POST   | /api/auth/register        | No   | Register a new user       |
-| POST   | /api/auth/login           | No   | Login and get JWT         |
-| GET    | /api/stories              | No   | Get stories (paginated)   |
-| GET    | /api/stories/bookmarks    | Yes  | Get user's bookmarks      |
-| GET    | /api/stories/:id          | No   | Get a single story        |
-| POST   | /api/stories/:id/bookmark | Yes  | Toggle bookmark on story  |
-| POST   | /api/stories/scrape       | No   | Trigger manual scrape     |
-| GET    | /api/health               | No   | Health check              |
+| Method | Endpoint | Auth Required | What it does |
+|--------|----------|---------------|--------------|
+| POST | /api/auth/register | No | Create a new account |
+| POST | /api/auth/login | No | Log in, get a token |
+| GET | /api/stories | No | Get paginated stories |
+| GET | /api/stories/bookmarks | Yes | Get your bookmarks |
+| POST | /api/stories/:id/bookmark | Yes | Bookmark/unbookmark a story |
+| POST | /api/stories/scrape | No | Trigger a fresh scrape |
+| GET | /api/health | No | Check if server is alive |
+
+---
 
 ## Project Structure
 
 ```
 hn-board/
-├── .env                        # Environment variables
 ├── server/
-│   ├── index.js                # Express entry point
-│   ├── config/db.js            # MongoDB connection
-│   ├── controllers/            # Route handlers
-│   ├── middleware/auth.js      # JWT middleware
-│   ├── models/                 # Mongoose schemas
-│   │   ├── User.js
-│   │   └── Story.js
-│   ├── routes/                 # API routes
-│   │   ├── auth.routes.js
-│   │   └── story.routes.js
-│   └── scraper/hackerScraper.js
+│   ├── index.js               # Entry point, Express setup
+│   ├── config/db.js           # MongoDB connection
+│   ├── controllers/           # Business logic
+│   ├── middleware/auth.js     # JWT verification
+│   ├── models/                # User and Story schemas
+│   ├── routes/                # API route definitions
+│   ├── scraper/               # Hacker News scraper
+│   └── .env                   # Environment config
 ├── client/
-│   ├── public/
-│   │   └── loginbg.png         # Login page background
+│   ├── public/                # Static assets (login background, etc.)
 │   └── src/
-│       ├── api/axios.js        # Axios instance
-│       ├── components/         # Navbar, ProtectedRoute
-│       ├── context/AuthContext.jsx
-│       ├── pages/              # Login, Register, Home, Bookmarks
-│       └── App.css             # All styles
+│       ├── api/axios.js       # API client setup
+│       ├── components/        # Navbar, ProtectedRoute
+│       ├── context/           # Auth state management
+│       ├── pages/             # Login, Register, Home, Bookmarks
+│       └── App.css            # All styles
 └── README.md
 ```
 
+---
+
+## Design Decisions
+
+- **No external UI library** — I wanted full control over the look and feel. The login page uses glassmorphism, floating particles, and a cinematic dark layout that I designed from scratch.
+- **Optimistic UI for bookmarks** — When you click bookmark, it updates instantly on the frontend without waiting for the server. If the server fails, it rolls back. This makes the app feel snappy.
+- **Single-server production** — Instead of deploying frontend and backend separately, the Express server serves the React build in production. Simpler to deploy, fewer moving parts.
+- **Rate-limited scraping** — The scraper has a 60-second cooldown so users can't hammer the server with refresh requests.
+
+---
+
 ## Demo Credentials
+
+If you just want to test it without registering:
 
 ```
 Email:    akshit2@test.com
 Password: 123456
 ```
+
+---
+
+## What I'd Add Next
+
+If I had more time, I'd probably add:
+- Search and filter stories by keyword
+- Push notifications for trending stories
+- User profile page with reading history
+- Deploy on a cloud platform with a custom domain
+
+---
 
 ## License
 
