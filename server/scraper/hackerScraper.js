@@ -33,7 +33,8 @@ async function runScraper() {
         : 0;
 
       const author = subtext.find('.hnuser').text() || 'unknown';
-      const postedAt = subtext.find('.age').attr('title') || '';
+      const ageEl = subtext.find('.age');
+      const postedAt = ageEl.length ? ageEl.text().trim() : 'unknown';
 
       // Filter out job posts / rows with 0 points
       if (points > 0) {

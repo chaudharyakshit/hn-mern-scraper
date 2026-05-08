@@ -25,16 +25,12 @@ const StoryCard = ({ story, isBookmarked, onBookmarkToggle }) => {
     }
   };
 
-  const timeAgo = story.postedAt
-    ? new Date(story.postedAt).toLocaleString()
-    : '';
-
   return (
     <div className="story-card">
       <div className="story-points">
-        <span className="points-badge">{story.points}</span>
+        {story.points}
       </div>
-      <div className="story-content">
+      <div className="story-body">
         <a
           href={story.url}
           target="_blank"
@@ -44,8 +40,8 @@ const StoryCard = ({ story, isBookmarked, onBookmarkToggle }) => {
           {story.title}
         </a>
         <div className="story-meta">
-          <span>by {story.author}</span>
-          {timeAgo && <span> · {timeAgo}</span>}
+          <span className="author">by {story.author}</span>
+          {story.postedAt && <span>{story.postedAt}</span>}
         </div>
       </div>
       {token && (

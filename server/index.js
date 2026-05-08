@@ -4,14 +4,16 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const { runScraper } = require('./scraper/hackerScraper');
 
+const path = require('path');
 dotenv.config();
 connectDB();
 
 const app = express();
 
 // Middleware
+const isProduction = process.env.NODE_ENV === 'production';
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: isProduction ? true : (process.env.CLIENT_URL || 'http://localhost:3000'),
   credentials: true
 }));
 app.use(express.json());
@@ -22,13 +24,20 @@ app.use('/api/stories', require('./routes/story.routes'));
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' });
+  res.json({ status: 'ok', message: 'Server is running', env: process.env.NODE_ENV });
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'Route not found' });
-});
+// Serve React build in production
+if (isProduction) {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  });
+} else {
+  app.use((req, res) => {
+    res.status(404).json({ success: false, message: 'Route not found' });
+  });
+}
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -40,7 +49,8 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const HOST = process.env.HOST || '0.0.0.0';
+app.listen(PORT, HOST, () => {
+  console.log(`Server running on ${HOST}:${PORT}`);
   runScraper();
 });
