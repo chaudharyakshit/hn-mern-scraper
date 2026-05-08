@@ -13,7 +13,7 @@ const app = express();
 // Middleware
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(cors({
-  origin: isProduction ? true : (process.env.CLIENT_URL || 'http://localhost:3000'),
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
@@ -30,7 +30,7 @@ app.get('/api/health', (req, res) => {
 // Serve React build in production
 if (isProduction) {
   app.use(express.static(path.join(__dirname, '../client/build')));
-  app.get('*', (req, res) => {
+  app.get('{*path}', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
   });
 } else {
